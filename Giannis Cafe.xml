@@ -2,7 +2,7 @@
 <launch4jConfig>
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>C:\Giann\Programming\ComprogFinals\OrderingSystem\out\artifacts\OrderingSystem_jar\OrderingSystem.jar</jar>
+  <jar>C:\Giann\Programming\ComprogFinals\OrderingSystem.jar</jar>
   <outfile>C:\Users\franc\OneDrive\Desktop\Giannis Cafe.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
@@ -15,7 +15,7 @@
   <manifest></manifest>
   <icon>C:\Users\franc\Downloads\GiannisCafe_icon.ico</icon>
   <singleInstance>
-    <mutexName>Cafe ni Giann</mutexName>
+    <mutexName>Giann Cafe</mutexName>
     <windowTitle></windowTitle>
   </singleInstance>
   <jre>
