@@ -40,9 +40,11 @@ public class menu extends javax.swing.JFrame {
          double cash = Double.valueOf(jTF_Cash.getText());
          double Change = cash - Total;
         StringBuilder receiptText = new StringBuilder();
-        receiptText.append("                                   GIANNIS CAFE\n"
-                + "                            STI College Lucena City\n"
-                + "--------------------------------------------------------------\n")
+        receiptText.append("""
+                                                              GIANNIS CAFE
+                                                       STI College Lucena City
+                           --------------------------------------------------------------
+                           """)
                .append("Item:\t\t\t").append("Price: \n\n");
 
     for (int i = 0; i < cart.getRowCount(); i++) {
@@ -370,6 +372,7 @@ public class menu extends javax.swing.JFrame {
         jTA_Receipt.setEditable(false);
         jTA_Receipt.setColumns(20);
         jTA_Receipt.setRows(5);
+        jTA_Receipt.setEnabled(false);
         jScrollPane4.setViewportView(jTA_Receipt);
 
         display.addTab("Receipt", jScrollPane4);
@@ -462,7 +465,7 @@ public class menu extends javax.swing.JFrame {
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24)
+                .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(jp_ReceiptLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1828,7 +1831,7 @@ public class menu extends javax.swing.JFrame {
             if (Total == 0.0) {
                 JOptionPane.showMessageDialog(null, "You haven't selected any product to purchase");
             } else if (cash < Total) {
-                JOptionPane.showMessageDialog(null, "Insufficient credit, broke ass mf");
+                JOptionPane.showMessageDialog(null, "Insufficient credit");
             } else {
                 jB_Purchase.setEnabled(false);
                 updateReceipt();
