@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.UnsupportedLookAndFeelException;
-import java.awt.Graphics;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -21,9 +21,12 @@ public class menu extends javax.swing.JFrame {
     private boolean isDarkMode = true;
     private int x = 0;
     private double Total = 0.0;
+    
+     
     public menu() {
         initComponents();
         init();
+        
     }
     public void init(){
         setImage();
@@ -35,9 +38,23 @@ public class menu extends javax.swing.JFrame {
         }
         return true;
     }
-    public void Cafefe(){
-        jTA_Receipt.setText("-------------------------GIANNIS CAFE-----------------------\n"+"Item Name:\t\t\t"+"Price: \n\n");
-        
+     private void updateReceipt() {
+        StringBuilder receiptText = new StringBuilder();
+        receiptText.append("-------------------------GIANNIS CAFE-----------------------\n")
+               .append("Item Name:\t\t\t").append("Price: \n\n");
+
+    for (int i = 0; i < cart.getRowCount(); i++) {
+        int qty = (int) cart.getValueAt(i, 0);
+        String item = (String) cart.getValueAt(i, 1);
+        String price = (String) cart.getValueAt(i, 2);
+        receiptText.append(qty).append(" ").append(item).append("\t\t").append(price).append("\n");
+    }
+
+    receiptText.append("\n-----------------------------------------------------------------\n")
+               .append("Total:\t\t\t").append("₱").append(Total).append("\n")
+               .append("--------------------Thanks for Purchasing-------------------\n");
+
+    jTA_Receipt.setText(receiptText.toString());
     }
     public void Total(){
         jTF_Total.setText("₱"+String.valueOf(Total));
@@ -113,10 +130,14 @@ public class menu extends javax.swing.JFrame {
         jB_Receipt = new javax.swing.JButton();
         jB_Exit = new javax.swing.JButton();
         jB_Reset = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTA_Receipt = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         jTF_Total = new javax.swing.JTextField();
+        display = new javax.swing.JTabbedPane();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        cart = new javax.swing.JTable();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTA_Receipt = new javax.swing.JTextArea();
+        remove = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jL_Header = new javax.swing.JLabel();
         jB_mode1 = new javax.swing.JToggleButton();
@@ -306,13 +327,6 @@ public class menu extends javax.swing.JFrame {
             }
         });
 
-        jTA_Receipt.setEditable(false);
-        jTA_Receipt.setColumns(20);
-        jTA_Receipt.setFont(new java.awt.Font("Microsoft YaHei", 0, 12)); // NOI18N
-        jTA_Receipt.setRows(5);
-        jTA_Receipt.setToolTipText("");
-        jScrollPane1.setViewportView(jTA_Receipt);
-
         jLabel1.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
         jLabel1.setText("TOTAL:");
 
@@ -320,12 +334,63 @@ public class menu extends javax.swing.JFrame {
         jTF_Total.setFont(new java.awt.Font("Microsoft YaHei UI", 1, 24)); // NOI18N
         jTF_Total.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTF_Total.setText("₱0.0");
+        jTF_Total.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTF_TotalActionPerformed(evt);
+            }
+        });
+
+        DefaultTableModel cartModel = new DefaultTableModel();
+        cartModel.setColumnIdentifiers(new Object[]{"QTY", "ITEM", "PRICE"});
+        cart.setModel(cartModel);
+        cart.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "QTY", "ITEM", "PRICE"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        cart.getTableHeader().setReorderingAllowed(false);
+        jScrollPane3.setViewportView(cart);
+        if (cart.getColumnModel().getColumnCount() > 0) {
+            cart.getColumnModel().getColumn(0).setResizable(false);
+            cart.getColumnModel().getColumn(0).setPreferredWidth(10);
+            cart.getColumnModel().getColumn(1).setResizable(false);
+            cart.getColumnModel().getColumn(2).setResizable(false);
+        }
+
+        display.addTab("Cart", jScrollPane3);
+
+        jTA_Receipt.setColumns(20);
+        jTA_Receipt.setRows(5);
+        jScrollPane4.setViewportView(jTA_Receipt);
+
+        display.addTab("Receipt", jScrollPane4);
+
+        remove.setText("Remove");
+        remove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jp_ReceiptLayout = new javax.swing.GroupLayout(jp_Receipt);
         jp_Receipt.setLayout(jp_ReceiptLayout);
         jp_ReceiptLayout.setHorizontalGroup(
             jp_ReceiptLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(jp_ReceiptLayout.createSequentialGroup()
+                .addComponent(display, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 29, Short.MAX_VALUE))
             .addGroup(jp_ReceiptLayout.createSequentialGroup()
                 .addGroup(jp_ReceiptLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jp_ReceiptLayout.createSequentialGroup()
@@ -343,15 +408,20 @@ public class menu extends javax.swing.JFrame {
                         .addGap(16, 16, 16)
                         .addComponent(jLabel1)
                         .addGap(60, 60, 60)
-                        .addComponent(jTF_Total, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(29, Short.MAX_VALUE))
-            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jTF_Total, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jp_ReceiptLayout.createSequentialGroup()
+                        .addGap(124, 124, 124)
+                        .addComponent(remove)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jp_ReceiptLayout.setVerticalGroup(
             jp_ReceiptLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jp_ReceiptLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addContainerGap()
+                .addComponent(display, javax.swing.GroupLayout.PREFERRED_SIZE, 516, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(remove)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jp_ReceiptLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jTF_Total, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -391,7 +461,7 @@ public class menu extends javax.swing.JFrame {
                 .addComponent(jB_mode1)
                 .addGap(264, 264, 264)
                 .addComponent(jL_Header, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(308, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1681,7 +1751,7 @@ public class menu extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 924, Short.MAX_VALUE))
+                    .addComponent(jTabbedPane1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jp_Receipt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -1689,21 +1759,27 @@ public class menu extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 750, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jp_Receipt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 750, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jp_Receipt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
-        setSize(new java.awt.Dimension(1294, 807));
+        setSize(new java.awt.Dimension(1254, 807));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jB_ResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jB_ResetActionPerformed
-        jTA_Receipt.setText("");
+        DefaultTableModel cartModel = (DefaultTableModel) cart.getModel();
+        cartModel.setRowCount(0);
+        jTA_Receipt.setText("-------------------------GIANNIS CAFE-----------------------\n"
+                + "Item Name:\t\t\t" + "Price: \n\n");
         Total = 0.0;
         Total();
-        x = 0;
         jB_Purchase.setEnabled(true);
     }//GEN-LAST:event_jB_ResetActionPerformed
 
@@ -1714,6 +1790,8 @@ public class menu extends javax.swing.JFrame {
             jTA_Receipt.setText(jTA_Receipt.getText() + "\n-----------------------------------------------------------------\n"
                     + "Total:\t\t\t" + "₱" + Total + "\n--------------------Thanks for Purchasing-------------------\n");
             jB_Purchase.setEnabled(false);
+            updateReceipt();
+            display.setSelectedIndex(1);
         }
 
 
@@ -1758,13 +1836,11 @@ public class menu extends javax.swing.JFrame {
                 return;
             }
             if (qtyIsZero(qty)){
-                x++;
-                if(x==1){
-                    Cafefe();
-                }
                 int price = qty * Iprice;
                 Total += price;
-                jTA_Receipt.setText(jTA_Receipt.getText()+ qty + " "+ jL_ItemName8.getText()+" ("+jCB_ItemSize8.getSelectedItem()+")"+"\t\t"+"₱"+price+"\n");
+                String item8 = jL_ItemName8.getText() + " ("+ jCB_ItemSize8.getSelectedItem()+")";
+                DefaultTableModel item = (DefaultTableModel) cart.getModel();
+                item.addRow(new Object[]{qty, item8, "₱" + price});
             }
             jS_ItemQuantity8.setValue(0);
             Total();
@@ -1793,13 +1869,11 @@ public class menu extends javax.swing.JFrame {
                 return;
             }
             if (qtyIsZero(qty)) {
-                x++;
-                if (x == 1) {
-                    Cafefe();
-                }
                 int price = qty * Iprice;
                 Total += price;
-                jTA_Receipt.setText(jTA_Receipt.getText() + qty + " " + jL_ItemName7.getText() + " (" + jCB_ItemSize7.getSelectedItem() + ")" + "\t\t" + "₱" + price + "\n");
+                String item7 = jL_ItemName7.getText() + " ("+ jCB_ItemSize7.getSelectedItem()+")";
+                DefaultTableModel item = (DefaultTableModel) cart.getModel();
+                item.addRow(new Object[]{qty, item7, "₱" + price});
             }
             jS_ItemQuantity7.setValue(0);
             Total();
@@ -1827,13 +1901,11 @@ public class menu extends javax.swing.JFrame {
                 return;
             }
             if (qtyIsZero(qty)) {
-                x++;
-                if (x == 1) {
-                    Cafefe();
-                }
                 int price = qty * Iprice;
                 Total += price;
-                jTA_Receipt.setText(jTA_Receipt.getText() + qty + " " + jL_ItemName6.getText() + " (" + jCB_ItemSize6.getSelectedItem() + ")" + "\t\t" + "₱" + price + "\n");
+                String item6 = jL_ItemName6.getText() + " ("+ jCB_ItemSize6.getSelectedItem()+")";
+                DefaultTableModel item = (DefaultTableModel) cart.getModel();
+                item.addRow(new Object[]{qty, item6, "₱" + price});
             }
             jS_ItemQuantity6.setValue(0);
             Total();
@@ -1861,13 +1933,11 @@ public class menu extends javax.swing.JFrame {
                 return;
             }
             if (qtyIsZero(qty)) {
-                x++;
-                if (x == 1) {
-                    Cafefe();
-                }
                 int price = qty * Iprice;
                 Total += price;
-                jTA_Receipt.setText(jTA_Receipt.getText() + qty + " " + jL_ItemName5.getText() + " (" + jCB_ItemSize5.getSelectedItem() + ")" + "\t\t" + "₱" + price + "\n");
+                String item5 = jL_ItemName5.getText() + " ("+ jCB_ItemSize5.getSelectedItem()+")";
+                DefaultTableModel item = (DefaultTableModel) cart.getModel();
+                item.addRow(new Object[]{qty, item5, "₱" + price});
             }
             jS_ItemQuantity5.setValue(0);
             Total();
@@ -1896,13 +1966,11 @@ public class menu extends javax.swing.JFrame {
                 return;
             }
             if (qtyIsZero(qty)) {
-                x++;
-                if (x == 1) {
-                    Cafefe();
-                }
                 int price = qty * Iprice;
                 Total += price;
-                jTA_Receipt.setText(jTA_Receipt.getText() + qty + " " + jL_ItemName4.getText() + " (" + jCB_ItemSize4.getSelectedItem() + ")" + "\t\t" + "₱" + price + "\n");
+                String item4 = jL_ItemName4.getText() + " ("+ jCB_ItemSize4.getSelectedItem()+")";
+                DefaultTableModel item = (DefaultTableModel) cart.getModel();
+                item.addRow(new Object[]{qty, item4, "₱" + price});
             }
             jS_ItemQuantity4.setValue(0);
             Total();
@@ -1931,13 +1999,11 @@ public class menu extends javax.swing.JFrame {
                 return;
             }
             if (qtyIsZero(qty)) {
-                x++;
-                if (x == 1) {
-                    Cafefe();
-                }
                 int price = qty * Iprice;
                 Total += price;
-                jTA_Receipt.setText(jTA_Receipt.getText() + qty + " " + jL_ItemName3.getText() + " (" + jCB_ItemSize3.getSelectedItem() + ")" + "\t\t" + "₱" + price + "\n");
+                String item3 = jL_ItemName3.getText() + " ("+ jCB_ItemSize3.getSelectedItem()+")";
+                DefaultTableModel item = (DefaultTableModel) cart.getModel();
+                item.addRow(new Object[]{qty, item3, "₱" + price});
             }
             jS_ItemQuantity3.setValue(0);
             Total();
@@ -1965,13 +2031,12 @@ public class menu extends javax.swing.JFrame {
                 return;
             }
             if (qtyIsZero(qty)) {
-                x++;
-                if (x == 1) {
-                    Cafefe();
-                }
                 int price = qty * Iprice;
                 Total += price;
-                jTA_Receipt.setText(jTA_Receipt.getText() + qty + " " + jL_ItemName2.getText() + " (" + jCB_ItemSize2.getSelectedItem() + ")" + "\t\t" + "₱" + price + "\n");
+                String item2 = jL_ItemName2.getText() + " ("+ jCB_ItemSize2.getSelectedItem()+")";
+                DefaultTableModel item = (DefaultTableModel) cart.getModel();
+                item.addRow(new Object[]{qty, item2, "₱" + price});
+                
             }
             jS_ItemQuantity2.setValue(0);
             Total();
@@ -1999,16 +2064,15 @@ public class menu extends javax.swing.JFrame {
                 return;
             }
             if (qtyIsZero(qty)) {
-                x++;
-                if (x == 1) {
-                    Cafefe();
-                }
                 int price = qty * Iprice;
                 Total += price;
-                jTA_Receipt.setText(jTA_Receipt.getText() + qty + " " + jL_ItemName1.getText() + " (" + jCB_ItemSize1.getSelectedItem() + ")" + "\t\t" + "₱" + price + "\n");
+                String item1 = jL_ItemName1.getText() + " ("+ jCB_ItemSize1.getSelectedItem()+")";
+                DefaultTableModel item = (DefaultTableModel) cart.getModel();
+                item.addRow(new Object[]{qty, item1, "₱" + price});
             }
             jS_ItemQuantity1.setValue(0);
             Total();
+            
         } else {
             JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
         }
@@ -2139,13 +2203,11 @@ public class menu extends javax.swing.JFrame {
             int qty = (int) jS_DessertQuantity1.getValue();
             int Iprice = 90;
             if (qtyIsZero(qty)) {
-                x++;
-                if (x == 1) {
-                    Cafefe();
-                }
                 int price = qty * Iprice;
                 Total += price;
-                jTA_Receipt.setText(jTA_Receipt.getText() + qty + " " + jL_DessertName1.getText() +  "\t\t\t" + "₱" + price + "\n");
+                String Dessert1 = jL_DessertName1.getText();
+                DefaultTableModel item = (DefaultTableModel) cart.getModel();
+                item.addRow(new Object[]{qty, Dessert1, "₱" + price});
             }
             jS_DessertQuantity1.setValue(0);
             Total();
@@ -2159,13 +2221,11 @@ public class menu extends javax.swing.JFrame {
             int qty = (int) jS_DessertQuantity5.getValue();
             int Iprice = 85;
             if (qtyIsZero(qty)) {
-                x++;
-                if (x == 1) {
-                    Cafefe();
-                }
                 int price = qty * Iprice;
                 Total += price;
-                jTA_Receipt.setText(jTA_Receipt.getText() + qty + " " + jL_DessertName5.getText() +  "\t\t\t" + "₱" + price + "\n");
+                String Dessert5 = jL_DessertName5.getText();
+                DefaultTableModel item = (DefaultTableModel) cart.getModel();
+                item.addRow(new Object[]{qty, Dessert5, "₱" + price});
             }
             jS_DessertQuantity5.setValue(0);
             Total();
@@ -2179,13 +2239,11 @@ public class menu extends javax.swing.JFrame {
             int qty = (int) jS_DessertQuantity2.getValue();
             int Iprice = 60;
             if (qtyIsZero(qty)) {
-                x++;
-                if (x == 1) {
-                    Cafefe();
-                }
                 int price = qty * Iprice;
                 Total += price;
-                jTA_Receipt.setText(jTA_Receipt.getText() + qty + " " + jL_DessertName2.getText() +  "\t\t\t" + "₱" + price + "\n");
+                String Dessert2 = jL_DessertName2.getText();
+                DefaultTableModel item = (DefaultTableModel) cart.getModel();
+                item.addRow(new Object[]{qty, Dessert2, "₱" + price});
             }
             jS_DessertQuantity2.setValue(0);
             Total();
@@ -2199,13 +2257,11 @@ public class menu extends javax.swing.JFrame {
             int qty = (int) jS_DessertQuantity6.getValue();
             int Iprice = 65;
             if (qtyIsZero(qty)) {
-                x++;
-                if (x == 1) {
-                    Cafefe();
-                }
                 int price = qty * Iprice;
                 Total += price;
-                jTA_Receipt.setText(jTA_Receipt.getText() + qty + " " + jL_DessertName6.getText() +  "\t\t\t" + "₱" + price + "\n");
+                String Dessert6 = jL_DessertName6.getText();
+                DefaultTableModel item = (DefaultTableModel) cart.getModel();
+                item.addRow(new Object[]{qty, Dessert6, "₱" + price});
             }
             jS_DessertQuantity6.setValue(0);
             Total();
@@ -2219,13 +2275,11 @@ public class menu extends javax.swing.JFrame {
             int qty = (int) jS_DessertQuantity3.getValue();
             int Iprice = 75;
             if (qtyIsZero(qty)) {
-                x++;
-                if (x == 1) {
-                    Cafefe();
-                }
                 int price = qty * Iprice;
                 Total += price;
-                jTA_Receipt.setText(jTA_Receipt.getText() + qty + " " + jL_DessertName3.getText() +  "\t\t\t" + "₱" + price + "\n");
+                String Dessert3 = jL_DessertName3.getText();
+                DefaultTableModel item = (DefaultTableModel) cart.getModel();
+                item.addRow(new Object[]{qty, Dessert3, "₱" + price});
             }
             jS_DessertQuantity3.setValue(0);
             Total();
@@ -2239,13 +2293,11 @@ public class menu extends javax.swing.JFrame {
             int qty = (int) jS_DessertQuantity4.getValue();
             int Iprice = 70;
             if (qtyIsZero(qty)) {
-                x++;
-                if (x == 1) {
-                    Cafefe();
-                }
                 int price = qty * Iprice;
                 Total += price;
-                jTA_Receipt.setText(jTA_Receipt.getText() + qty + " " + jL_DessertName4.getText() +  "\t\t\t" + "₱" + price + "\n");
+                String Dessert4 = jL_DessertName4.getText();
+                DefaultTableModel item = (DefaultTableModel) cart.getModel();
+                item.addRow(new Object[]{qty, Dessert4, "₱" + price});
             }
             jS_DessertQuantity4.setValue(0);
             Total();
@@ -2259,13 +2311,11 @@ public class menu extends javax.swing.JFrame {
             int qty = (int) jS_DessertQuantity8.getValue();
             int Iprice = 70;
             if (qtyIsZero(qty)) {
-                x++;
-                if (x == 1) {
-                    Cafefe();
-                }
                 int price = qty * Iprice;
                 Total += price;
-                jTA_Receipt.setText(jTA_Receipt.getText() + qty + " " + jL_DessertName8.getText() +  "\t\t\t" + "₱" + price + "\n");
+                String Dessert8 = jL_DessertName8.getText();
+                DefaultTableModel item = (DefaultTableModel) cart.getModel();
+                item.addRow(new Object[]{qty, Dessert8, "₱" + price});
             }
             jS_DessertQuantity8.setValue(0);
             Total();
@@ -2279,13 +2329,11 @@ public class menu extends javax.swing.JFrame {
             int qty = (int) jS_DessertQuantity7.getValue();
             int Iprice = 80;
             if (qtyIsZero(qty)) {
-                x++;
-                if (x == 1) {
-                    Cafefe();
-                }
                 int price = qty * Iprice;
                 Total += price;
-                jTA_Receipt.setText(jTA_Receipt.getText() + qty + " " + jL_DessertName7.getText() +  "\t\t\t" + "₱" + price + "\n");
+                String Dessert7 = jL_DessertName7.getText();
+                DefaultTableModel item = (DefaultTableModel) cart.getModel();
+                item.addRow(new Object[]{qty, Dessert7, "₱" + price});
             }
             jS_DessertQuantity7.setValue(0);
             Total();
@@ -2310,9 +2358,36 @@ public class menu extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_jB_mode1ActionPerformed
 
+    private void jTF_TotalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTF_TotalActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTF_TotalActionPerformed
 
-
+    private void removeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeActionPerformed
+        if (jB_Purchase.isEnabled()) {
+            int selectedRow = cart.getSelectedRow();
+            if (selectedRow != -1) {
+                int dialogButton = JOptionPane.YES_NO_OPTION;
+                int dialogResult = JOptionPane.showConfirmDialog(null, "Would you like to remove this item?", "Confirmation", dialogButton);
+                if (dialogResult == JOptionPane.YES_OPTION) {
+                    DefaultTableModel cartModel = (DefaultTableModel) cart.getModel();
+                    
+                    String priceStr = cartModel.getValueAt(selectedRow, 2).toString().replaceAll("[^\\d.]", "");
+                    double removedPrice = Double.parseDouble(priceStr);
+                    cartModel.removeRow(selectedRow);
+                    Total -= removedPrice;
+                    Total();
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Please select an item to remove.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset.");
+    }//GEN-LAST:event_removeActionPerformed
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable cart;
+    private javax.swing.JTabbedPane display;
     private javax.swing.JButton jB_BuyDessert1;
     private javax.swing.JButton jB_BuyDessert2;
     private javax.swing.JButton jB_BuyDessert3;
@@ -2466,13 +2541,15 @@ public class menu extends javax.swing.JFrame {
     private javax.swing.JSpinner jS_ItemQuantity6;
     private javax.swing.JSpinner jS_ItemQuantity7;
     private javax.swing.JSpinner jS_ItemQuantity8;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextArea jTA_Receipt;
     private javax.swing.JTextField jTF_Total;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JPanel jp_MainMenu;
     private javax.swing.JPanel jp_Receipt;
+    private javax.swing.JButton remove;
     // End of variables declaration//GEN-END:variables
 
 }

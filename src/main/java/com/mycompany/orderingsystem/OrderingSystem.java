@@ -19,7 +19,22 @@ public class OrderingSystem {
             Logger.getLogger(OrderingSystem.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        menu m = new menu();
-        m.setVisible(true);
+        LoadingScreen splash = new LoadingScreen();
+        splash.setVisible(true);
+        try{
+           for (int i = 0; i <=500; i++){
+               Thread.sleep(10); 
+               LoadingScreen.loading.setValue(i);
+               if(i==500){
+                   menu m = new menu();
+                   splash.dispose();
+                   m.setVisible(true);
+                   
+               }
+           }
+        }catch(Exception e){
+            
+        }
+        
     }
 }
