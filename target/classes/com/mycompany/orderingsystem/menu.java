@@ -20,7 +20,6 @@ import javax.swing.table.DefaultTableModel;
 public class menu extends javax.swing.JFrame {
     private boolean isDarkMode = true;
     private double Total = 0.0;
-    
      
     public menu() {
         initComponents();
@@ -38,9 +37,13 @@ public class menu extends javax.swing.JFrame {
         return true;
     }
      private void updateReceipt() {
+         double cash = Double.valueOf(jTF_Cash.getText());
+         double Change = cash - Total;
         StringBuilder receiptText = new StringBuilder();
-        receiptText.append("-------------------------GIANNIS CAFE-----------------------\n")
-               .append("Item Name:\t\t\t").append("Price: \n\n");
+        receiptText.append("                                   GIANNIS CAFE\n"
+                + "                            STI College Lucena City\n"
+                + "--------------------------------------------------------------\n")
+               .append("Item:\t\t\t").append("Price: \n\n");
 
     for (int i = 0; i < cart.getRowCount(); i++) {
         int qty = (int) cart.getValueAt(i, 0);
@@ -49,9 +52,11 @@ public class menu extends javax.swing.JFrame {
         receiptText.append(qty).append(" ").append(item).append("\t\t").append(price).append("\n");
     }
 
-    receiptText.append("\n-----------------------------------------------------------------\n")
-               .append("Total:\t\t\t").append("₱").append(Total).append("\n")
-               .append("--------------------Thanks for Purchasing-------------------\n");
+    receiptText.append("\n--------------------------------------------------------------\n")
+                .append("Total:\t\t\t").append("₱").append(Total).append("\n")
+                .append("Cash:\t\t\t").append("₱").append(cash).append("\n\n")
+                .append("Change:\t\t\t").append("₱").append(Change).append("\n")
+                .append("--------------------Thanks for Purchasing------------------\n");
 
     jTA_Receipt.setText(receiptText.toString());
     }
@@ -137,6 +142,9 @@ public class menu extends javax.swing.JFrame {
         jTA_Receipt = new javax.swing.JTextArea();
         remove = new javax.swing.JButton();
         jTF_Total = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jTF_Cash = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         jL_Header = new javax.swing.JLabel();
         jB_mode1 = new javax.swing.JToggleButton();
@@ -359,6 +367,7 @@ public class menu extends javax.swing.JFrame {
 
         display.addTab("Cart", jScrollPane3);
 
+        jTA_Receipt.setEditable(false);
         jTA_Receipt.setColumns(20);
         jTA_Receipt.setRows(5);
         jScrollPane4.setViewportView(jTA_Receipt);
@@ -377,14 +386,44 @@ public class menu extends javax.swing.JFrame {
         jTF_Total.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jTF_Total.setText("₱0.0");
 
+        jLabel2.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
+        jLabel2.setText("CASH:");
+
+        jTF_Cash.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
+        jTF_Cash.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+                .addComponent(jTF_Cash, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jTF_Cash))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jp_ReceiptLayout = new javax.swing.GroupLayout(jp_Receipt);
         jp_Receipt.setLayout(jp_ReceiptLayout);
         jp_ReceiptLayout.setHorizontalGroup(
             jp_ReceiptLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(jp_ReceiptLayout.createSequentialGroup()
-                .addComponent(display, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 29, Short.MAX_VALUE))
+            .addComponent(jSeparator1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jp_ReceiptLayout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jTF_Total, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24))
             .addGroup(jp_ReceiptLayout.createSequentialGroup()
                 .addGroup(jp_ReceiptLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jp_ReceiptLayout.createSequentialGroup()
@@ -399,29 +438,33 @@ public class menu extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(jB_Reset, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jp_ReceiptLayout.createSequentialGroup()
-                        .addGap(16, 16, 16)
-                        .addComponent(jLabel1)
-                        .addGap(43, 43, 43)
-                        .addComponent(jTF_Total, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(130, 130, 130)
+                        .addComponent(remove))
                     .addGroup(jp_ReceiptLayout.createSequentialGroup()
-                        .addGap(124, 124, 124)
-                        .addComponent(remove)))
-                .addContainerGap(82, Short.MAX_VALUE))
+                        .addContainerGap()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(16, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jp_ReceiptLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(display, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jp_ReceiptLayout.setVerticalGroup(
             jp_ReceiptLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jp_ReceiptLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(display, javax.swing.GroupLayout.PREFERRED_SIZE, 516, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(display, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(remove)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jp_ReceiptLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jTF_Total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(14, 14, 14)
+                    .addComponent(jTF_Total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36)
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(jp_ReceiptLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jB_Purchase, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jB_Reset, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1748,7 +1791,7 @@ public class menu extends javax.swing.JFrame {
                     .addComponent(jTabbedPane1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jp_Receipt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(133, 133, 133))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -1770,31 +1813,39 @@ public class menu extends javax.swing.JFrame {
     private void jB_ResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jB_ResetActionPerformed
         DefaultTableModel cartModel = (DefaultTableModel) cart.getModel();
         cartModel.setRowCount(0);
-        jTA_Receipt.setText("-------------------------GIANNIS CAFE-----------------------\n"
-                + "Item Name:\t\t\t" + "Price: \n\n");
+        jTA_Receipt.setText("");
         Total = 0.0;
+        jTF_Cash.setText("");
         Total();
         jB_Purchase.setEnabled(true);
+        display.setSelectedIndex(0);
     }//GEN-LAST:event_jB_ResetActionPerformed
 
     private void jB_PurchaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jB_PurchaseActionPerformed
-        if (Total == 0.0) {
-            JOptionPane.showMessageDialog(null, "You haven't selected any product to purchase");
-        } else {
-            jTA_Receipt.setText(jTA_Receipt.getText() + "\n-----------------------------------------------------------------\n"
-                    + "Total:\t\t\t" + "₱" + Total + "\n--------------------Thanks for Purchasing-------------------\n");
-            jB_Purchase.setEnabled(false);
-            updateReceipt();
-            display.setSelectedIndex(1);
+        try {
+            double cash = Double.parseDouble(jTF_Cash.getText());
+
+            if (Total == 0.0) {
+                JOptionPane.showMessageDialog(null, "You haven't selected any product to purchase");
+            } else if (cash < Total) {
+                JOptionPane.showMessageDialog(null, "Insufficient credit, broke ass mf");
+            } else {
+                jB_Purchase.setEnabled(false);
+                updateReceipt();
+                display.setSelectedIndex(1);
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Invalid cash value entered.");
         }
-
-
     }//GEN-LAST:event_jB_PurchaseActionPerformed
 
     private void jB_ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jB_ExitActionPerformed
-        System.exit(0);
+        int dialogButton = JOptionPane.YES_NO_OPTION;
+        int dialogResult = JOptionPane.showConfirmDialog(null, "Would you like exit?", "Confirmation", dialogButton);
+        if (dialogResult == JOptionPane.YES_OPTION) {
+            System.exit(0);
     }//GEN-LAST:event_jB_ExitActionPerformed
-
+    }
     private void jB_ReceiptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jB_ReceiptActionPerformed
         if (Total != 0){
             if (!jB_Purchase.isEnabled()) {
@@ -2463,6 +2514,7 @@ public class menu extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
@@ -2515,6 +2567,7 @@ public class menu extends javax.swing.JFrame {
     private javax.swing.JPanel jP_Item9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JSpinner jS_DessertQuantity1;
     private javax.swing.JSpinner jS_DessertQuantity2;
     private javax.swing.JSpinner jS_DessertQuantity3;
@@ -2535,6 +2588,7 @@ public class menu extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextArea jTA_Receipt;
+    private javax.swing.JTextField jTF_Cash;
     private javax.swing.JLabel jTF_Total;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JPanel jp_MainMenu;
