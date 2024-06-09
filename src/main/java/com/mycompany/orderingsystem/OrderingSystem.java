@@ -2,8 +2,7 @@ package com.mycompany.orderingsystem;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 
 /**
  *
@@ -22,18 +21,18 @@ public class OrderingSystem {
         LoadingScreen splash = new LoadingScreen();
         splash.setVisible(true);
         try{
-           for (int i = 0; i <=500; i++){
+           for (int i = 0; i <=400; i++){
                Thread.sleep(10); 
                LoadingScreen.loading.setValue(i);
-               if(i==500){
+               if(i==400){
                    menu m = new menu();
                    splash.dispose();
                    m.setVisible(true);
                    
                }
            }
-        }catch(Exception e){
-            
+        }catch(InterruptedException ie){
+            JOptionPane.showMessageDialog(null, "An error occurred: " + ie.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
         
     }

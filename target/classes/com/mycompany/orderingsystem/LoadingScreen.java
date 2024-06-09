@@ -38,8 +38,8 @@ public class LoadingScreen extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Script MT Bold", 1, 48)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 204, 51));
-        jLabel2.setText("Giannis Cafe");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 10, 300, 60));
+        jLabel2.setText("Kapeez");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 40, 170, 60));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/Coffee App Loading Animation.gif"))); // NOI18N
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 600));

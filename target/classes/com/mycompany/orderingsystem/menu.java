@@ -31,7 +31,7 @@ public class menu extends javax.swing.JFrame {
     }
     public boolean qtyIsZero(int qty){
         if(qty == 0){
-            JOptionPane.showMessageDialog(null, "Quantitiy can't be zero (0)");
+            JOptionPane.showMessageDialog(null, "Quantity can't be zero (0)");
             return false;
         }
         return true;
@@ -41,7 +41,8 @@ public class menu extends javax.swing.JFrame {
          double Change = cash - Total;
         StringBuilder receiptText = new StringBuilder();
         receiptText.append("""
-                                                              GIANNIS CAFE
+                                                                    Kapeez
+                                                                    Group 6
                                                        STI College Lucena City
                            --------------------------------------------------------------
                            """)
@@ -122,6 +123,8 @@ public class menu extends javax.swing.JFrame {
         jL_DessertImage8.setIcon(new ImageIcon(img16));
        
     }
+    
+    
     
     
 
@@ -347,7 +350,7 @@ public class menu extends javax.swing.JFrame {
 
             },
             new String [] {
-                "QTY", "ITEM", "PRICE"
+                "QTY", "           ITEM          ", "PRICE"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -441,7 +444,7 @@ public class menu extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(jB_Reset, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jp_ReceiptLayout.createSequentialGroup()
-                        .addGap(130, 130, 130)
+                        .addGap(121, 121, 121)
                         .addComponent(remove))
                     .addGroup(jp_ReceiptLayout.createSequentialGroup()
                         .addContainerGap()
@@ -480,7 +483,7 @@ public class menu extends javax.swing.JFrame {
 
         jL_Header.setFont(new java.awt.Font("Maiandra GD", 1, 36)); // NOI18N
         jL_Header.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jL_Header.setText("GIANNIS CAFE");
+        jL_Header.setText("Kapeez");
 
         jB_mode1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/night-mode.png"))); // NOI18N
         jB_mode1.setToolTipText("");
@@ -1827,7 +1830,6 @@ public class menu extends javax.swing.JFrame {
     private void jB_PurchaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jB_PurchaseActionPerformed
         try {
             double cash = Double.parseDouble(jTF_Cash.getText());
-
             if (Total == 0.0) {
                 JOptionPane.showMessageDialog(null, "You haven't selected any product to purchase");
             } else if (cash < Total) {
@@ -1849,6 +1851,7 @@ public class menu extends javax.swing.JFrame {
             System.exit(0);
     }//GEN-LAST:event_jB_ExitActionPerformed
     }
+    
     private void jB_ReceiptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jB_ReceiptActionPerformed
         if (Total != 0){
             if (!jB_Purchase.isEnabled()) {
@@ -1866,36 +1869,52 @@ public class menu extends javax.swing.JFrame {
     }//GEN-LAST:event_jB_ReceiptActionPerformed
 
     private void jB_BuyItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jB_BuyItem8ActionPerformed
-        if(jB_Purchase.isEnabled()){
+        if (jB_Purchase.isEnabled()) {
             int qty = (int) jS_ItemQuantity8.getValue();
             int selectedSize = jCB_ItemSize8.getSelectedIndex();
             int Iprice;
             switch (selectedSize) {
                 case 0:
-                Iprice = 115;
-                break;
+                    Iprice = 115;
+                    break;
                 case 1:
-                Iprice = 135;
-                break;
+                    Iprice = 135;
+                    break;
                 case 2:
-                Iprice = 155;
-                break;
+                    Iprice = 155;
+                    break;
                 default:
-                return;
+                    return;
             }
-            if (qtyIsZero(qty)){
+            if (qtyIsZero(qty)) {
+                String item8 = jL_ItemName8.getText() + " (" + jCB_ItemSize8.getSelectedItem() + ")";
+                int rowIndex = -1;
+                for (int i = 0; i < cart.getRowCount(); i++) {
+                    if (cart.getValueAt(i, 1).toString().equals(item8)) {
+                        rowIndex = i;
+                        break;
+                    }
+                }
+
                 int price = qty * Iprice;
                 Total += price;
-                String item8 = jL_ItemName8.getText() + " ("+ jCB_ItemSize8.getSelectedItem()+")";
-                DefaultTableModel item = (DefaultTableModel) cart.getModel();
-                item.addRow(new Object[]{qty, item8, "₱" + price});
+
+                if (rowIndex == -1) {
+                    DefaultTableModel model = (DefaultTableModel) cart.getModel();
+                    model.addRow(new Object[]{qty, item8, "₱" + price});
+                } else {
+                    int existingQty = (int) cart.getValueAt(rowIndex, 0);
+                    int existingPrice = Integer.parseInt(cart.getValueAt(rowIndex, 2).toString().replace("₱", ""));
+                    cart.setValueAt(existingQty + qty, rowIndex, 0);
+                    cart.setValueAt("₱" + (existingPrice + price), rowIndex, 2);
+                }
+
+                jS_ItemQuantity8.setValue(0);
+                Total();
             }
-            jS_ItemQuantity8.setValue(0);
-            Total();
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
         }
-
     }//GEN-LAST:event_jB_BuyItem8ActionPerformed
 
     private void jB_BuyItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jB_BuyItem7ActionPerformed
@@ -1905,26 +1924,43 @@ public class menu extends javax.swing.JFrame {
             int Iprice;
             switch (selectedSize) {
                 case 0:
-                Iprice = 110;
-                break;
+                    Iprice = 110;
+                    break;
                 case 1:
-                Iprice = 130;
-                break;
+                    Iprice = 130;
+                    break;
                 case 2:
-                Iprice = 150;
-                break;
+                    Iprice = 150;
+                    break;
                 default:
-                return;
+                    return;
             }
             if (qtyIsZero(qty)) {
+                String item7 = jL_ItemName7.getText() + " (" + jCB_ItemSize7.getSelectedItem() + ")";
+                int rowIndex = -1;
+                for (int i = 0; i < cart.getRowCount(); i++) {
+                    if (cart.getValueAt(i, 1).toString().equals(item7)) {
+                        rowIndex = i;
+                        break;
+                    }
+                }
+
                 int price = qty * Iprice;
                 Total += price;
-                String item7 = jL_ItemName7.getText() + " ("+ jCB_ItemSize7.getSelectedItem()+")";
-                DefaultTableModel item = (DefaultTableModel) cart.getModel();
-                item.addRow(new Object[]{qty, item7, "₱" + price});
+
+                if (rowIndex == -1) {
+                    DefaultTableModel model = (DefaultTableModel) cart.getModel();
+                    model.addRow(new Object[]{qty, item7, "₱" + price});
+                } else {
+                    int existingQty = (int) cart.getValueAt(rowIndex, 0);
+                    int existingPrice = Integer.parseInt(cart.getValueAt(rowIndex, 2).toString().replace("₱", ""));
+                    cart.setValueAt(existingQty + qty, rowIndex, 0);
+                    cart.setValueAt("₱" + (existingPrice + price), rowIndex, 2);
+                }
+
+                jS_ItemQuantity7.setValue(0);
+                Total();
             }
-            jS_ItemQuantity7.setValue(0);
-            Total();
         } else {
             JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
         }
@@ -1937,29 +1973,46 @@ public class menu extends javax.swing.JFrame {
             int Iprice;
             switch (selectedSize) {
                 case 0:
-                Iprice = 120;
-                break;
+                    Iprice = 120;
+                    break;
                 case 1:
-                Iprice = 140;
-                break;
+                    Iprice = 140;
+                    break;
                 case 2:
-                Iprice = 160;
-                break;
+                    Iprice = 160;
+                    break;
                 default:
-                return;
+                    return;
             }
             if (qtyIsZero(qty)) {
+                String item6 = jL_ItemName6.getText() + " (" + jCB_ItemSize6.getSelectedItem() + ")";
+                int rowIndex = -1;
+                for (int i = 0; i < cart.getRowCount(); i++) {
+                    if (cart.getValueAt(i, 1).toString().equals(item6)) {
+                        rowIndex = i;
+                        break;
+                    }
+                }
+
                 int price = qty * Iprice;
                 Total += price;
-                String item6 = jL_ItemName6.getText() + " ("+ jCB_ItemSize6.getSelectedItem()+")";
-                DefaultTableModel item = (DefaultTableModel) cart.getModel();
-                item.addRow(new Object[]{qty, item6, "₱" + price});
+
+                if (rowIndex == -1) {
+                    DefaultTableModel model = (DefaultTableModel) cart.getModel();
+                    model.addRow(new Object[]{qty, item6, "₱" + price});
+                } else {
+                    int existingQty = (int) cart.getValueAt(rowIndex, 0);
+                    int existingPrice = Integer.parseInt(cart.getValueAt(rowIndex, 2).toString().replace("₱", ""));
+                    cart.setValueAt(existingQty + qty, rowIndex, 0);
+                    cart.setValueAt("₱" + (existingPrice + price), rowIndex, 2);
+                }
+
+                jS_ItemQuantity6.setValue(0);
+                Total();
+            } 
+        }else {
+                JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
             }
-            jS_ItemQuantity6.setValue(0);
-            Total();
-        } else {
-            JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
-        }
     }//GEN-LAST:event_jB_BuyItem6ActionPerformed
 
     private void jB_BuyItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jB_BuyItem5ActionPerformed
@@ -1969,30 +2022,46 @@ public class menu extends javax.swing.JFrame {
             int Iprice;
             switch (selectedSize) {
                 case 0:
-                Iprice = 110;
-                break;
+                    Iprice = 110;
+                    break;
                 case 1:
-                Iprice = 130;
-                break;
+                    Iprice = 130;
+                    break;
                 case 2:
-                Iprice = 150;
-                break;
+                    Iprice = 150;
+                    break;
                 default:
-                return;
+                    return;
             }
             if (qtyIsZero(qty)) {
+                String item5 = jL_ItemName5.getText() + " (" + jCB_ItemSize5.getSelectedItem() + ")";
+                int rowIndex = -1;
+                for (int i = 0; i < cart.getRowCount(); i++) {
+                    if (cart.getValueAt(i, 1).toString().equals(item5)) {
+                        rowIndex = i;
+                        break;
+                    }
+                }
+
                 int price = qty * Iprice;
                 Total += price;
-                String item5 = jL_ItemName5.getText() + " ("+ jCB_ItemSize5.getSelectedItem()+")";
-                DefaultTableModel item = (DefaultTableModel) cart.getModel();
-                item.addRow(new Object[]{qty, item5, "₱" + price});
-            }
-            jS_ItemQuantity5.setValue(0);
-            Total();
-        } else {
-            JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
-        }
 
+                if (rowIndex == -1) {
+                    DefaultTableModel model = (DefaultTableModel) cart.getModel();
+                    model.addRow(new Object[]{qty, item5, "₱" + price});
+                } else {
+                    int existingQty = (int) cart.getValueAt(rowIndex, 0);
+                    int existingPrice = Integer.parseInt(cart.getValueAt(rowIndex, 2).toString().replace("₱", ""));
+                    cart.setValueAt(existingQty + qty, rowIndex, 0);
+                    cart.setValueAt("₱" + (existingPrice + price), rowIndex, 2);
+                }
+
+                jS_ItemQuantity5.setValue(0);
+                Total();
+            } 
+        }else {
+                JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
+            }
     }//GEN-LAST:event_jB_BuyItem5ActionPerformed
 
     private void jB_BuyItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jB_BuyItem4ActionPerformed
@@ -2002,30 +2071,46 @@ public class menu extends javax.swing.JFrame {
             int Iprice;
             switch (selectedSize) {
                 case 0:
-                Iprice = 100;
-                break;
+                    Iprice = 100;
+                    break;
                 case 1:
-                Iprice = 120;
-                break;
+                    Iprice = 120;
+                    break;
                 case 2:
-                Iprice = 140;
-                break;
+                    Iprice = 140;
+                    break;
                 default:
-                return;
+                    return;
             }
             if (qtyIsZero(qty)) {
+                String item4 = jL_ItemName4.getText() + " (" + jCB_ItemSize4.getSelectedItem()+")";
+                int rowIndex = -1;
+                for (int i = 0; i < cart.getRowCount(); i++) {
+                    if (cart.getValueAt(i, 1).toString().equals(item4)) {
+                        rowIndex = i;
+                        break;
+                    }
+                }
+
                 int price = qty * Iprice;
                 Total += price;
-                String item4 = jL_ItemName4.getText() + " ("+ jCB_ItemSize4.getSelectedItem()+")";
-                DefaultTableModel item = (DefaultTableModel) cart.getModel();
-                item.addRow(new Object[]{qty, item4, "₱" + price});
-            }
-            jS_ItemQuantity4.setValue(0);
-            Total();
-        } else {
-            JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
-        }
 
+                if (rowIndex == -1) {
+                    DefaultTableModel model = (DefaultTableModel) cart.getModel();
+                    model.addRow(new Object[]{qty, item4, "₱" + price});
+                } else {
+                    int existingQty = (int) cart.getValueAt(rowIndex, 0);
+                    int existingPrice = Integer.parseInt(cart.getValueAt(rowIndex, 2).toString().replace("₱", ""));
+                    cart.setValueAt(existingQty + qty, rowIndex, 0);
+                    cart.setValueAt("₱" + (existingPrice + price), rowIndex, 2);
+                }
+
+                jS_ItemQuantity4.setValue(0);
+                Total();
+            } 
+        }else {
+                JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
+            }
     }//GEN-LAST:event_jB_BuyItem4ActionPerformed
 
     private void jB_BuyItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jB_BuyItem3ActionPerformed
@@ -2035,29 +2120,46 @@ public class menu extends javax.swing.JFrame {
             int Iprice;
             switch (selectedSize) {
                 case 0:
-                Iprice = 110;
-                break;
+                    Iprice = 110;
+                    break;
                 case 1:
-                Iprice = 130;
-                break;
+                    Iprice = 130;
+                    break;
                 case 2:
-                Iprice = 150;
-                break;
+                    Iprice = 150;
+                    break;
                 default:
-                return;
+                    return;
             }
             if (qtyIsZero(qty)) {
+                String item3 = jL_ItemName3.getText() + " (" + jCB_ItemSize3.getSelectedItem() + ")";
+                int rowIndex = -1;
+                for (int i = 0; i < cart.getRowCount(); i++) {
+                    if (cart.getValueAt(i, 1).toString().equals(item3)) {
+                        rowIndex = i;
+                        break;
+                    }
+                }
+
                 int price = qty * Iprice;
                 Total += price;
-                String item3 = jL_ItemName3.getText() + " ("+ jCB_ItemSize3.getSelectedItem()+")";
-                DefaultTableModel item = (DefaultTableModel) cart.getModel();
-                item.addRow(new Object[]{qty, item3, "₱" + price});
+
+                if (rowIndex == -1) {
+                    DefaultTableModel model = (DefaultTableModel) cart.getModel();
+                    model.addRow(new Object[]{qty, item3, "₱" + price});
+                } else {
+                    int existingQty = (int) cart.getValueAt(rowIndex, 0);
+                    int existingPrice = Integer.parseInt(cart.getValueAt(rowIndex, 2).toString().replace("₱", ""));
+                    cart.setValueAt(existingQty + qty, rowIndex, 0);
+                    cart.setValueAt("₱" + (existingPrice + price), rowIndex, 2);
+                }
+
+                jS_ItemQuantity3.setValue(0);
+                Total();
+            } 
+        }else {
+                JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
             }
-            jS_ItemQuantity3.setValue(0);
-            Total();
-        } else {
-            JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
-        }
     }//GEN-LAST:event_jB_BuyItem3ActionPerformed
 
     private void jB_BuyItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jB_BuyItem2ActionPerformed
@@ -2067,30 +2169,46 @@ public class menu extends javax.swing.JFrame {
             int Iprice;
             switch (selectedSize) {
                 case 0:
-                Iprice = 115;
-                break;
+                    Iprice = 115;
+                    break;
                 case 1:
-                Iprice = 135;
-                break;
+                    Iprice = 135;
+                    break;
                 case 2:
-                Iprice = 155;
-                break;
+                    Iprice = 155;
+                    break;
                 default:
-                return;
+                    return;
             }
             if (qtyIsZero(qty)) {
+                String item2 = jL_ItemName2.getText() + " (" + jCB_ItemSize2.getSelectedItem() + ")";
+                int rowIndex = -1;
+                for (int i = 0; i < cart.getRowCount(); i++) {
+                    if (cart.getValueAt(i, 1).toString().equals(item2)) {
+                        rowIndex = i;
+                        break;
+                    }
+                }
+
                 int price = qty * Iprice;
                 Total += price;
-                String item2 = jL_ItemName2.getText() + " ("+ jCB_ItemSize2.getSelectedItem()+")";
-                DefaultTableModel item = (DefaultTableModel) cart.getModel();
-                item.addRow(new Object[]{qty, item2, "₱" + price});
-                
+
+                if (rowIndex == -1) {
+                    DefaultTableModel model = (DefaultTableModel) cart.getModel();
+                    model.addRow(new Object[]{qty, item2, "₱" + price});
+                } else {
+                    int existingQty = (int) cart.getValueAt(rowIndex, 0);
+                    int existingPrice = Integer.parseInt(cart.getValueAt(rowIndex, 2).toString().replace("₱", ""));
+                    cart.setValueAt(existingQty + qty, rowIndex, 0);
+                    cart.setValueAt("₱" + (existingPrice + price), rowIndex, 2);
+                }
+
+                jS_ItemQuantity2.setValue(0);
+                Total();
+            } 
+        }else {
+                JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
             }
-            jS_ItemQuantity2.setValue(0);
-            Total();
-        } else {
-            JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
-        }
     }//GEN-LAST:event_jB_BuyItem2ActionPerformed
 
     private void jB_BuyItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jB_BuyItem1ActionPerformed
@@ -2100,30 +2218,47 @@ public class menu extends javax.swing.JFrame {
             int Iprice;
             switch (selectedSize) {
                 case 0:
-                Iprice = 110;
-                break;
+                    Iprice = 110;
+                    break;
                 case 1:
-                Iprice = 130;
-                break;
+                    Iprice = 130;
+                    break;
                 case 2:
-                Iprice = 150;
-                break;
+                    Iprice = 150;
+                    break;
                 default:
-                return;
+                    return;
             }
             if (qtyIsZero(qty)) {
+                String item1 = jL_ItemName1.getText() + " (" + jCB_ItemSize1.getSelectedItem() + ")";
+                int rowIndex = -1;
+                for (int i = 0; i < cart.getRowCount(); i++) {
+                    if (cart.getValueAt(i, 1).toString().equals(item1)) {
+                        rowIndex = i;
+                        break;
+                    }
+                }
+
                 int price = qty * Iprice;
                 Total += price;
-                String item1 = jL_ItemName1.getText() + " ("+ jCB_ItemSize1.getSelectedItem()+")";
-                DefaultTableModel item = (DefaultTableModel) cart.getModel();
-                item.addRow(new Object[]{qty, item1, "₱" + price});
+
+                if (rowIndex == -1) {
+                    DefaultTableModel model = (DefaultTableModel) cart.getModel();
+                    model.addRow(new Object[]{qty, item1, "₱" + price});
+                } else {
+                    int existingQty = (int) cart.getValueAt(rowIndex, 0);
+                    int existingPrice = Integer.parseInt(cart.getValueAt(rowIndex, 2).toString().replace("₱", ""));
+                    cart.setValueAt(existingQty + qty, rowIndex, 0);
+                    cart.setValueAt("₱" + (existingPrice + price), rowIndex, 2);
+                }
+
+                jS_ItemQuantity1.setValue(0);
+                Total();
+
+            } 
+        }else {
+                JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
             }
-            jS_ItemQuantity1.setValue(0);
-            Total();
-            
-        } else {
-            JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
-        }
     }//GEN-LAST:event_jB_BuyItem1ActionPerformed
 
     private void jCB_ItemSize5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCB_ItemSize5ActionPerformed
@@ -2251,14 +2386,29 @@ public class menu extends javax.swing.JFrame {
             int qty = (int) jS_DessertQuantity1.getValue();
             int Iprice = 90;
             if (qtyIsZero(qty)) {
+                String dessert1 = jL_DessertName1.getText();
+                int rowIndex = -1;
+                for (int i = 0; i < cart.getRowCount(); i++) {
+                    if (cart.getValueAt(i, 1).toString().equals(dessert1)) {
+                        rowIndex = i;
+                        break;
+                    }
+                }
                 int price = qty * Iprice;
                 Total += price;
-                String Dessert1 = jL_DessertName1.getText();
-                DefaultTableModel item = (DefaultTableModel) cart.getModel();
-                item.addRow(new Object[]{qty, Dessert1, "₱" + price});
+                if (rowIndex == -1) {
+                    DefaultTableModel model = (DefaultTableModel) cart.getModel();
+                    model.addRow(new Object[]{qty, dessert1, "₱" + price});
+                } else {
+                    int existingQty = (int) cart.getValueAt(rowIndex, 0);
+                    int existingPrice = Integer.parseInt(cart.getValueAt(rowIndex, 2).toString().replace("₱", ""));
+                    cart.setValueAt(existingQty + qty, rowIndex, 0);
+                    cart.setValueAt("₱" + (existingPrice + price), rowIndex, 2);
+                }
+
+                jS_DessertQuantity1.setValue(0);
+                Total();
             }
-            jS_DessertQuantity1.setValue(0);
-            Total();
         } else {
             JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
         }
@@ -2269,14 +2419,29 @@ public class menu extends javax.swing.JFrame {
             int qty = (int) jS_DessertQuantity5.getValue();
             int Iprice = 85;
             if (qtyIsZero(qty)) {
+                String dessert5 = jL_DessertName5.getText();
+                int rowIndex = -1;
+                for (int i = 0; i < cart.getRowCount(); i++) {
+                    if (cart.getValueAt(i, 1).toString().equals(dessert5)) {
+                        rowIndex = i;
+                        break;
+                    }
+                }
                 int price = qty * Iprice;
                 Total += price;
-                String Dessert5 = jL_DessertName5.getText();
-                DefaultTableModel item = (DefaultTableModel) cart.getModel();
-                item.addRow(new Object[]{qty, Dessert5, "₱" + price});
+                if (rowIndex == -1) {
+                    DefaultTableModel model = (DefaultTableModel) cart.getModel();
+                    model.addRow(new Object[]{qty, dessert5, "₱" + price});
+                } else {
+                    int existingQty = (int) cart.getValueAt(rowIndex, 0);
+                    int existingPrice = Integer.parseInt(cart.getValueAt(rowIndex, 3).toString().replace("₱", ""));
+                    cart.setValueAt(existingQty + qty, rowIndex, 0);
+                    cart.setValueAt("₱" + (existingPrice + price), rowIndex, 2);
+                }
+
+                jS_DessertQuantity5.setValue(0);
+                Total();
             }
-            jS_DessertQuantity5.setValue(0);
-            Total();
         } else {
             JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
         }
@@ -2287,14 +2452,29 @@ public class menu extends javax.swing.JFrame {
             int qty = (int) jS_DessertQuantity2.getValue();
             int Iprice = 60;
             if (qtyIsZero(qty)) {
+                String dessert2 = jL_DessertName2.getText();
+                int rowIndex = -1;
+                for (int i = 0; i < cart.getRowCount(); i++) {
+                    if (cart.getValueAt(i, 1).toString().equals(dessert2)) {
+                        rowIndex = i;
+                        break;
+                    }
+                }
                 int price = qty * Iprice;
                 Total += price;
-                String Dessert2 = jL_DessertName2.getText();
-                DefaultTableModel item = (DefaultTableModel) cart.getModel();
-                item.addRow(new Object[]{qty, Dessert2, "₱" + price});
+                if (rowIndex == -1) {
+                    DefaultTableModel model = (DefaultTableModel) cart.getModel();
+                    model.addRow(new Object[]{qty, dessert2, "₱" + price});
+                } else {
+                    int existingQty = (int) cart.getValueAt(rowIndex, 0);
+                    int existingPrice = Integer.parseInt(cart.getValueAt(rowIndex, 2).toString().replace("₱", ""));
+                    cart.setValueAt(existingQty + qty, rowIndex, 0);
+                    cart.setValueAt("₱" + (existingPrice + price), rowIndex, 2);
+                }
+
+                jS_DessertQuantity2.setValue(0);
+                Total();
             }
-            jS_DessertQuantity2.setValue(0);
-            Total();
         } else {
             JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
         }
@@ -2305,14 +2485,29 @@ public class menu extends javax.swing.JFrame {
             int qty = (int) jS_DessertQuantity6.getValue();
             int Iprice = 65;
             if (qtyIsZero(qty)) {
+                String dessert6 = jL_DessertName6.getText();
+                int rowIndex = -1;
+                for (int i = 0; i < cart.getRowCount(); i++) {
+                    if (cart.getValueAt(i, 1).toString().equals(dessert6)) {
+                        rowIndex = i;
+                        break;
+                    }
+                }
                 int price = qty * Iprice;
                 Total += price;
-                String Dessert6 = jL_DessertName6.getText();
-                DefaultTableModel item = (DefaultTableModel) cart.getModel();
-                item.addRow(new Object[]{qty, Dessert6, "₱" + price});
+                if (rowIndex == -1) {
+                    DefaultTableModel model = (DefaultTableModel) cart.getModel();
+                    model.addRow(new Object[]{qty, dessert6, "₱" + price});
+                } else {
+                    int existingQty = (int) cart.getValueAt(rowIndex, 0);
+                    int existingPrice = Integer.parseInt(cart.getValueAt(rowIndex, 2).toString().replace("₱", ""));
+                    cart.setValueAt(existingQty + qty, rowIndex, 0);
+                    cart.setValueAt("₱" + (existingPrice + price), rowIndex, 2);
+                }
+
+                jS_DessertQuantity6.setValue(0);
+                Total();
             }
-            jS_DessertQuantity6.setValue(0);
-            Total();
         } else {
             JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
         }
@@ -2323,14 +2518,29 @@ public class menu extends javax.swing.JFrame {
             int qty = (int) jS_DessertQuantity3.getValue();
             int Iprice = 75;
             if (qtyIsZero(qty)) {
+                String dessert3 = jL_DessertName3.getText();
+                int rowIndex = -1;
+                for (int i = 0; i < cart.getRowCount(); i++) {
+                    if (cart.getValueAt(i, 1).toString().equals(dessert3)) {
+                        rowIndex = i;
+                        break;
+                    }
+                }
                 int price = qty * Iprice;
                 Total += price;
-                String Dessert3 = jL_DessertName3.getText();
-                DefaultTableModel item = (DefaultTableModel) cart.getModel();
-                item.addRow(new Object[]{qty, Dessert3, "₱" + price});
+                if (rowIndex == -1) {
+                    DefaultTableModel model = (DefaultTableModel) cart.getModel();
+                    model.addRow(new Object[]{qty, dessert3, "₱" + price});
+                } else {
+                    int existingQty = (int) cart.getValueAt(rowIndex, 0);
+                    int existingPrice = Integer.parseInt(cart.getValueAt(rowIndex, 2).toString().replace("₱", ""));
+                    cart.setValueAt(existingQty + qty, rowIndex, 0);
+                    cart.setValueAt("₱" + (existingPrice + price), rowIndex, 2);
+                }
+
+                jS_DessertQuantity3.setValue(0);
+                Total();
             }
-            jS_DessertQuantity3.setValue(0);
-            Total();
         } else {
             JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
         }
@@ -2341,14 +2551,29 @@ public class menu extends javax.swing.JFrame {
             int qty = (int) jS_DessertQuantity4.getValue();
             int Iprice = 70;
             if (qtyIsZero(qty)) {
+                String dessert4 = jL_DessertName4.getText();
+                int rowIndex = -1;
+                for (int i = 0; i < cart.getRowCount(); i++) {
+                    if (cart.getValueAt(i, 1).toString().equals(dessert4)) {
+                        rowIndex = i;
+                        break;
+                    }
+                }
                 int price = qty * Iprice;
                 Total += price;
-                String Dessert4 = jL_DessertName4.getText();
-                DefaultTableModel item = (DefaultTableModel) cart.getModel();
-                item.addRow(new Object[]{qty, Dessert4, "₱" + price});
+                if (rowIndex == -1) {
+                    DefaultTableModel model = (DefaultTableModel) cart.getModel();
+                    model.addRow(new Object[]{qty, dessert4, "₱" + price});
+                } else {
+                    int existingQty = (int) cart.getValueAt(rowIndex, 0);
+                    int existingPrice = Integer.parseInt(cart.getValueAt(rowIndex, 2).toString().replace("₱", ""));
+                    cart.setValueAt(existingQty + qty, rowIndex, 0);
+                    cart.setValueAt("₱" + (existingPrice + price), rowIndex, 2);
+                }
+
+                jS_DessertQuantity4.setValue(0);
+                Total();
             }
-            jS_DessertQuantity4.setValue(0);
-            Total();
         } else {
             JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
         }
@@ -2359,14 +2584,29 @@ public class menu extends javax.swing.JFrame {
             int qty = (int) jS_DessertQuantity8.getValue();
             int Iprice = 70;
             if (qtyIsZero(qty)) {
+                String dessert8 = jL_DessertName8.getText();
+                int rowIndex = -1;
+                for (int i = 0; i < cart.getRowCount(); i++) {
+                    if (cart.getValueAt(i, 1).toString().equals(dessert8)) {
+                        rowIndex = i;
+                        break;
+                    }
+                }
                 int price = qty * Iprice;
                 Total += price;
-                String Dessert8 = jL_DessertName8.getText();
-                DefaultTableModel item = (DefaultTableModel) cart.getModel();
-                item.addRow(new Object[]{qty, Dessert8, "₱" + price});
+                if (rowIndex == -1) {
+                    DefaultTableModel model = (DefaultTableModel) cart.getModel();
+                    model.addRow(new Object[]{qty, dessert8, "₱" + price});
+                } else {
+                    int existingQty = (int) cart.getValueAt(rowIndex, 0);
+                    int existingPrice = Integer.parseInt(cart.getValueAt(rowIndex, 2).toString().replace("₱", ""));
+                    cart.setValueAt(existingQty + qty, rowIndex, 0);
+                    cart.setValueAt("₱" + (existingPrice + price), rowIndex, 2);
+                }
+
+                jS_DessertQuantity8.setValue(0);
+                Total();
             }
-            jS_DessertQuantity8.setValue(0);
-            Total();
         } else {
             JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
         }
@@ -2377,14 +2617,29 @@ public class menu extends javax.swing.JFrame {
             int qty = (int) jS_DessertQuantity7.getValue();
             int Iprice = 80;
             if (qtyIsZero(qty)) {
+                String dessert7 = jL_DessertName7.getText();
+                int rowIndex = -1;
+                for (int i = 0; i < cart.getRowCount(); i++) {
+                    if (cart.getValueAt(i, 1).toString().equals(dessert7)) {
+                        rowIndex = i;
+                        break;
+                    }
+                }
                 int price = qty * Iprice;
                 Total += price;
-                String Dessert7 = jL_DessertName7.getText();
-                DefaultTableModel item = (DefaultTableModel) cart.getModel();
-                item.addRow(new Object[]{qty, Dessert7, "₱" + price});
+                if (rowIndex == -1) {
+                    DefaultTableModel model = (DefaultTableModel) cart.getModel();
+                    model.addRow(new Object[]{qty, dessert7, "₱" + price});
+                } else {
+                    int existingQty = (int) cart.getValueAt(rowIndex, 0);
+                    int existingPrice = Integer.parseInt(cart.getValueAt(rowIndex, 2).toString().replace("₱", ""));
+                    cart.setValueAt(existingQty + qty, rowIndex, 0);
+                    cart.setValueAt("₱" + (existingPrice + price), rowIndex, 2);
+                }
+
+                jS_DessertQuantity7.setValue(0);
+                Total();
             }
-            jS_DessertQuantity7.setValue(0);
-            Total();
         } else {
             JOptionPane.showMessageDialog(null, "The purchase process has been completed. Click Reset");
         }
